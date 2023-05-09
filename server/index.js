@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 
 import { registerValidation } from "./validations/register.js";
 import { UserModel } from "./models/UserModel.js";
+import { checkAuthorization } from "./middlewares/checkAuth.js";
 
 dotenv.config();
 
@@ -28,16 +29,48 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/login", (req, res) => {
-  const token = jwt.sign(
-    {
-      email: req.body.email,
-      name: req.body.name,
-    },
-    process.env.SECRET_KEY
-  );
+app.get("/me", checkAuthorization, (req, res) => {
+  try {
+    res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-  res.json({ token });
+app.post("/login", async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Неверный логин или пароль" });
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      req.body.password,
+      user._doc.passwordHash
+    );
+
+    if (!isValidPassword) {
+      return res.status(400).json({
+        message: "Неверный логин или пароль",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        _id: user._doc._id,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "1d" }
+    );
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({ message: "Вы успешно авторизовались", ...userData, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Не удалось авторизоваться" });
+  }
 });
 
 app.post("/register", registerValidation, async (req, res) => {
@@ -54,17 +87,27 @@ app.post("/register", registerValidation, async (req, res) => {
 
     const password = req.body.password;
     const cryptSalt = await bcrypt.genSalt(5);
-    const passwordHash = await bcrypt.hash(password, cryptSalt);
+    const passHash = await bcrypt.hash(password, cryptSalt);
 
     const doc = new UserModel({
       email: req.body.email,
       name: req.body.name,
-      passwordHash,
+      passwordHash: passHash,
     });
 
     const user = await doc.save();
 
-    res.json({ message: "Вы успешно зарегистрировались", ...user._doc });
+    const token = jwt.sign(
+      {
+        _id: user._doc._id,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "1d" }
+    );
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({ message: "Вы успешно зарегистрировались", ...userData, token });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Не удалось зарегистрироваться" });
