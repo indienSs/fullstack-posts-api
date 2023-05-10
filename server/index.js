@@ -29,11 +29,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/me", checkAuthorization, (req, res) => {
+app.get("/me", checkAuthorization, async (req, res) => {
   try {
-    res.json({ success: true });
+    const user = await UserModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json(userData);
   } catch (error) {
     console.log(error);
+    res.status(501).json({ message: "Нет доступа" });
   }
 });
 

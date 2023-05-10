@@ -14,13 +14,11 @@ export const checkAuthorization = (req, res, next) => {
       next();
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "Ошибка доступа" });
+      res.status(300).json({ message: "Ошибка доступа" });
     }
   } else {
     return res.status(403).json({
       message: "Нет доступа",
     });
   }
-
-  res.send(token);
 };
