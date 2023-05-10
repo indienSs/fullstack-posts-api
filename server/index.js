@@ -2,15 +2,24 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import multer from "multer";
 
-import { registerValidation } from "./validations/registerValidation.js";
-import { loginValidation } from "./validations/loginValidation.js";
+import {
+  registerValidation,
+  loginValidation,
+  postCreateValidation,
+  errorsValidation,
+} from "./validations/index.js";
+import {
+  getPosts,
+  createPost,
+  updatePost,
+  deletePost,
+  register,
+  login,
+  getMe,
+} from "./controllers/index.js";
 import { checkAuthorization } from "./middlewares/checkAuth.js";
-import { register } from "./controllers/register.js";
-import { login } from "./controllers/login.js";
-import { getMe } from "./controllers/me.js";
-import { getPosts, createPost, deletePost } from "./controllers/posts.js";
-import { postCreateValidation } from "./validations/postValidation.js";
 
 dotenv.config();
 
@@ -30,14 +39,40 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, "uploads");
+  },
+
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.use("/uploads", express.static("uploads"));
+
 app.get("/me", checkAuthorization, getMe);
-app.post("/login", loginValidation, login);
-app.post("/register", registerValidation, register);
+app.post("/login", loginValidation, errorsValidation, login);
+app.post("/register", registerValidation, errorsValidation, register);
 
 app.get("/posts", getPosts);
-app.post("/posts", checkAuthorization, postCreateValidation, createPost);
+app.post(
+  "/posts",
+  checkAuthorization,
+  postCreateValidation,
+  errorsValidation,
+  createPost
+);
+app.patch("/posts/:id", checkAuthorization, errorsValidation, updatePost);
 app.delete("/posts/:id", checkAuthorization, deletePost);
-// app.patch("/posts", checkAuthorization, changePost);
+
+app.post("/upload", checkAuthorization, upload.single("image"), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

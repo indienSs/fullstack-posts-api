@@ -13,22 +13,6 @@ export const getPosts = async (req, res) => {
   }
 };
 
-export const deletePost = async (req, res) => {
-  try {
-    const postId = req.params.id;
-
-    await PostModel.findOneAndRemove({
-      _id: postId,
-    });
-    res.send({ success: true });
-  } catch (error) {
-    console.log(error);
-    res.status(501).json({
-      message: "Не удалось удалить пост",
-    });
-  }
-};
-
 export const createPost = async (req, res) => {
   try {
     const doc = new PostModel({
@@ -45,6 +29,44 @@ export const createPost = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Не удалось добавить пост",
+    });
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    await PostModel.updateOne(
+      {
+        _id: postId,
+      },
+      {
+        text: req.body.text,
+        imageUrl: req.body.imageUrl,
+        user: req.userId,
+      }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Не удалось обновить статью" });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    await PostModel.findOneAndRemove({
+      _id: postId,
+    });
+    res.send({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(501).json({
+      message: "Не удалось удалить пост",
     });
   }
 };

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//Модель для создания постов в БД
 const PostSchema = new mongoose.Schema({
   text: {
     type: String,

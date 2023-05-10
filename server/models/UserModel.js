@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//Модель для создания пользователей в БД
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,

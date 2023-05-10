@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+//Проверка авторизации для изменения информации на сервере
 export const checkAuthorization = (req, res, next) => {
   const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
 
