@@ -1,0 +1,12 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  border: 1px solid gray;
+  border-top: none;
+
+  h2 {
+    cursor: pointer;
+  }
+}

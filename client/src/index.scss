@@ -1,11 +1,37 @@
 * {
   margin: 0;
+  box-sizing: border-box;
 }
 
 body {
+  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  min-width: 120px;
+  padding: 0 15px;
+  height: 40px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.5;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+input {
+  width: 200px;
+  height: 40px;
 }

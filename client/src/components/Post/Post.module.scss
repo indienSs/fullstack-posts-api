@@ -1,0 +1,22 @@
+.post {
+  border: 1px solid gray;
+  width: 350px;
+  padding: 10px;
+  position: relative;
+
+  .post_changes {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    align-items: center;
+
+    img {
+      cursor: pointer;
+
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+}
