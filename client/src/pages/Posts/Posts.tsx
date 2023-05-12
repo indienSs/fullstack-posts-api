@@ -1,4 +1,5 @@
 import { FC } from "react";
+import styles from "./Posts.module.scss";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../redux/store";
 import {
@@ -8,8 +9,6 @@ import {
 } from "../../redux/reducers/posts";
 import { useEffect } from "react";
 import { Post } from "../../components/Post/Post";
-
-import styles from "./Posts.module.scss";
 
 export const Posts: FC = () => {
   const appDispatch = useAppDispatch();

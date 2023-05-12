@@ -1,10 +1,17 @@
 import { FC, useState } from "react";
 import axios from "../../api/axios";
 
-import styles from "./Login.module.scss"
+import styles from "./Login.module.scss";
+import { setUser } from "../../redux/reducers/user";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const Login: FC = () => {
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,8 +30,10 @@ export const Login: FC = () => {
   const loginServer = async () => {
     try {
       const { data } = await axios.post("/login", loginForm);
-      alert(data.message);
-      console.log(data);
+      const { message, __v, ...userData } = data;
+      alert(message);
+      dispatch(setUser(userData));
+      navigate("/");
     } catch (error: any) {
       if (error.response.data) {
         console.log(error.response.data.message);
