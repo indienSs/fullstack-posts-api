@@ -1,8 +1,14 @@
 .post {
   border: 1px solid gray;
+  border-radius: 8px;
   width: 350px;
   padding: 10px;
   position: relative;
+
+  .post_date {
+    font-size: 12px;
+    opacity: 0.5;
+  }
 
   .post_changes {
     position: absolute;

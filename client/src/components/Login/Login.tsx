@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
-import axios from "../../api/axios";
-
 import styles from "./Login.module.scss";
+import axios from "../../api/axios";
 import { setUser } from "../../redux/reducers/user";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 export const Login: FC = () => {
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -30,16 +30,18 @@ export const Login: FC = () => {
   const loginServer = async () => {
     try {
       const { data } = await axios.post("/login", loginForm);
-      const { message, __v, ...userData } = data;
-      alert(message);
+      const { message, __v, token, ...userData } = data;
       dispatch(setUser(userData));
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+      swal({ text: message, icon: "success" });
       navigate("/");
     } catch (error: any) {
       if (error.response.data) {
         console.log(error.response.data.message);
-        alert(error.response.data.message);
+        swal({ text: error.response.data.message, icon: "error" });
       } else {
-        alert("Не удалось авторизоваться");
+        swal({ text: "Не удалось авторизоваться", icon: "error" });
       }
     }
   };

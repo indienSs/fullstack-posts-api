@@ -1,0 +1,7 @@
+.app {
+  margin: 0 120px;
+
+  @media (max-width: 630px) {
+    margin: 0;
+  }
+}

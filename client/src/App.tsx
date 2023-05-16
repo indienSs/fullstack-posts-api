@@ -1,14 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
+import styles from "./App.module.scss";
 import { Header } from "./components/Header/Header";
 import { Route, Routes } from "react-router-dom";
 import { Posts } from "./pages/Posts/Posts";
 import { LoginPage } from "./pages/LoginPage/LoginPage";
-
-import styles from "./App.module.scss"
+import { useDispatch } from "react-redux";
+import { setUser } from "./redux/reducers/user";
 
 const App: FC = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      dispatch(setUser(JSON.parse(userData)));
+    }
+  }, []);
   return (
-    <div style={{ margin: "0px 120px" }}>
+    <div className={styles.app}>
       <Header />
       <Routes>
         <Route path="/" element={<Posts />} />

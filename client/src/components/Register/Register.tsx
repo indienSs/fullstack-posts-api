@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
-import axios from "../../api/axios";
-
 import styles from "./Register.module.scss";
+import axios from "../../api/axios";
+import swal from "sweetalert";
 
 export const Register: FC = () => {
   const [registerForm, setRegisterForm] = useState({
@@ -28,13 +28,14 @@ export const Register: FC = () => {
     try {
       const { data } = await axios.post("/register", registerForm);
       alert(data.message);
+      swal({ text: data.message, icon: "success" });
       console.log(data);
     } catch (error: any) {
       if (error.response.data) {
         console.log(error.response.data.message);
-        alert(error.response.data.message);
+        swal({ text: error.response.data.message, icon: "error" });
       } else {
-        alert("Не удалось авторизоваться");
+        swal({ text: "Не удалось авторизоваться", icon: "error" });
       }
     }
   };
