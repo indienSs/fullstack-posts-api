@@ -34,6 +34,7 @@ export const Login: FC = () => {
       dispatch(setUser(userData));
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
+      localStorage.setItem("date", Date.now().toString());
       swal({ text: message, icon: "success" });
       navigate("/");
     } catch (error: any) {

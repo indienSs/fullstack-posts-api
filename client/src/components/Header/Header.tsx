@@ -20,6 +20,8 @@ export const Header: FC = () => {
     });
   };
 
+  const createPost = () => {};
+
   return (
     <div className={styles.header}>
       <Link to="/">
@@ -27,7 +29,7 @@ export const Header: FC = () => {
       </Link>
       {user ? (
         <div className={styles.user_buttons}>
-          <button>Создать пост</button>
+          <button onClick={createPost}>Создать пост</button>
           <button onClick={exitAccount}>Выйти</button>
         </div>
       ) : (

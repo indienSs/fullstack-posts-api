@@ -12,10 +12,16 @@ const App: FC = () => {
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
+    const date = Number(localStorage.getItem("date"));
     if (userData) {
-      dispatch(setUser(JSON.parse(userData)));
+      if (Date.now() - date < 86400000) {
+        dispatch(setUser(JSON.parse(userData)));
+      } else {
+        localStorage.clear();
+      }
     }
   }, []);
+
   return (
     <div className={styles.app}>
       <Header />
